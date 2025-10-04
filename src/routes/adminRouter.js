@@ -1,7 +1,8 @@
 const express = require("express");
 const ADMIN = require("../models/adminSchema");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+
+const { adminAuth } = require("../middleware/Auth");
 
 const adminRouter = express.Router();
 
@@ -20,8 +21,12 @@ adminRouter.post("/admin/signUp", async (req, res) => {
 
     // Add token to cookie and send back to user
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 8 * 3600000),
+      httpOnly: true,
+      secure: false, // true in production with HTTPS
+      sameSite: "lax",
+      maxAge: 8 * 3600000, // 8 hours
     });
+
 
     res.json(result);
   } catch (error) {
@@ -29,7 +34,7 @@ adminRouter.post("/admin/signUp", async (req, res) => {
   }
 });
 
-adminRouter.post("/admin/login", async (req, res) => {
+adminRouter.post("/admin/login",  async (req, res) => {
   try {
     const { managerId, password } = req.body;
     const result = await ADMIN.findOne({ managerId });
@@ -43,19 +48,13 @@ adminRouter.post("/admin/login", async (req, res) => {
       const token = await result.getJWT();
 
       // Add token to cookie and send back to user
-      res.cookie(
-        "token",
-        token,
-        {
-          httpOnly: true,
-          secure: false, // ⚠️ set to true when using HTTPS in production
-          sameSite: "lax",
-          maxAge: 8 * 3600000,
-        },
-        {
-          expires: new Date(Date.now() + 8 * 3600000),
-        }
-      );
+     res.cookie("token", token, {
+       httpOnly: true,
+       secure: false, // true in production with HTTPS
+       sameSite: "lax",
+       maxAge: 8 * 3600000, // 8 hours
+     });
+
       res.json(result);
     } else {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -72,6 +71,11 @@ adminRouter.post("/admin/logout", async (req, res) => {
   } catch (error) {
     res.status(400).send("ERROR in logout: " + error.message);
   }
+});
+
+// -------------------- GET LOGGED-IN ADMIN --------------------
+adminRouter.get("/admin/me", adminAuth, (req, res) => {
+  res.json(req.adminData);
 });
 
 module.exports = adminRouter;

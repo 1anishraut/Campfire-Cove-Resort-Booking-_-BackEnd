@@ -1,40 +1,71 @@
 const express = require("express");
-const Menu_Data = require("../models/menuSchema");
+const Meals_Data = require("../models/mealSchema");
+const { adminAuth } = require("../middleware/Auth");
 
-const menuRouter = express.Router()
+const menuRouter = express.Router();
 
-menuRouter.post("/admin/addMenu", async (req, res) => {
+menuRouter.post("/admin/addMeals", adminAuth, async (req, res) => {
   try {
-    const { mealType, category, price } = req.body;
-    let updateQuery = {};
+    const { mealCategory, mealName, mealType, mealPrice, mealImage, cuisine } =
+      req.body;
+    const result = await Meals_Data.create({
+      mealCategory,
+      mealType,
+      mealName,
+      mealPrice,
+      mealImage,
+      cuisine,
+    });
 
-    if (mealType === "breakfast") {
-      updateQuery = { "breakfast.price": price };
-    } else if (mealType === "lunch") {
-      if (category === "veg") updateQuery = { "lunch.veg": price };
-      if (category === "nonveg") updateQuery = { "lunch.nonVeg": price };
-    } else if (mealType === "dinner") {
-      if (category === "veg") updateQuery = { "dinner.veg": price };
-      if (category === "nonveg") updateQuery = { "dinner.nonVeg": price };
-    }
-
-    // update existing doc or create one if none
-    const updatedMenu = await Menu_Data.findOneAndUpdate(
-      {},
-      { $set: updateQuery },
-      { new: true, upsert: true }
-    );
-
-    res.json(updatedMenu);
+    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-menuRouter.get("/admin/viewMenu", async (req, res)=>{
-  const menuData = await Menu_Data.find({});
-  res.json(menuData)
+menuRouter.patch("/admin/editMeal/:mealId", adminAuth, async (req, res) => {
+  try {
+    const { mealId } = req.params;
+    const { mealCategory, mealType, mealName, mealPrice, mealImage, cuisine } =
+      req.body;
+
+    const result = await Meals_Data.findByIdAndUpdate(
+      mealId,
+      {
+        mealCategory,
+        mealType,
+        mealName,
+        mealPrice,
+        mealImage,
+        cuisine,
+      },
+      { new: true }
+    );
+
+    if (!result) {
+      return res.status(404).json({ error: "Meal not found" });
+    }
+
+    res.json(result);
+  } catch (err) {
+    console.error("Error updating meal:", err);
+    res.status(500).json({ error: "Failed to update meal" });
+  }
+});
+
+menuRouter.get("/admin/listMeals", adminAuth, async (req, res) => {
+  try {
+    const menuData = await Meals_Data.find({});
+    res.json(menuData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+menuRouter.delete("/admin/deleteMeal/:mealId", adminAuth, async (req, res)=>{
+  const { mealId } = req.params;
+  const result = await Meals_Data.findByIdAndDelete(mealId)
+  res.json({message: "Deleted", result})
 })
 
-
-module.exports = menuRouter
+module.exports = menuRouter;

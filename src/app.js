@@ -6,13 +6,15 @@ const adminRouter = require("./routes/adminRouter");
 const addRoomRouter = require("./routes/roomRouter");
 const cookieParser = require("cookie-parser");
 const menuRouter = require("./routes/menuRouter");
+const userRouter = require("./routes/userRouter")
+const bookingRouter = require ("./routes/bookingRouter")
 
 const app = express();
 const server = http.createServer(app);
 
-
 const cors = require("cors");
-app.use(cors({ origin: "http://localhost:5173", credentials: true })); // allow frontend
+const adventureRouter = require("./routes/adventureRouter");
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -20,6 +22,11 @@ app.use(cookieParser());
 app.use("/", adminRouter);
 app.use("/", addRoomRouter);
 app.use("/", menuRouter);
+app.use("/", adventureRouter);
+app.use("/", userRouter);
+app.use("/", bookingRouter);
+
+
 
 connectDB()
   .then(() => {

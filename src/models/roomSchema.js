@@ -4,12 +4,12 @@ const roomSchema = mongoose.Schema(
   {
     roomName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     roomPrice: {
       type: Number,
-      required: true,
+      // required: true,
       min: 0,
     },
     roomImage: {
@@ -24,19 +24,19 @@ const roomSchema = mongoose.Schema(
     roomStatus: {
       type: String,
       default: "Available",
-      required: true,
+      // required: true,
       enum: {
         values: ["Booked", "Available"],
-        message: `{VALUE} is not a valid Room Status type`,
+        message: `{VALUE} is not a valid Stay Status type`,
       },
     },
     roomCheckIn: {
       type: Date,
-      required: true,
+      // required: true,
     },
     roomCheckOut: {
       type: Date,
-      required: true,
+      // required: true,
       validate: {
         validator: function (value) {
           if (!this.roomCheckIn) return true; // skip if no check-in
