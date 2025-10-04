@@ -14,7 +14,17 @@ const server = http.createServer(app);
 
 const cors = require("cors");
 const adventureRouter = require("./routes/adventureRouter");
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", 
+      "https://campfire-cove-resort-booking-front-tau.vercel.app", 
+    ],
+    credentials: true,
+  })
+);
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -28,16 +38,25 @@ app.use("/", bookingRouter);
 
 
 
-connectDB()
-  .then(() => {
-    console.log("✅ MongoDB connected");
+// connectDB()
+//   .then(() => {
+//     console.log("✅ MongoDB connected");
 
-    server.listen(process.env.PORT, () => {
-      console.log(
-        `Server is running on : http://localhost:${process.env.PORT}`
-      );
-    });
-  })
-  .catch((err) => {
-    console.error("❌ Getting errer in connecting database mongoDB");
-  });
+//     server.listen(process.env.PORT, () => {
+//       console.log(
+//         `Server is running on : http://localhost:${process.env.PORT}`
+//       );
+//     });
+//   })
+//   .catch((err) => {
+//     console.error("❌ Getting errer in connecting database mongoDB");
+//   });
+
+//  Connect to MongoDB
+connectDB()
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ Error connecting to MongoDB:", err));
+
+
+//  Export app for Vercel (no app.listen)
+module.exports = app;
