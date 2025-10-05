@@ -18,7 +18,7 @@ const adventureRouter = require("./routes/adventureRouter");
 app.use(
   cors({
     origin: [
-      "http://localhost:5173" ||
+      "http://localhost:5173",
       "https://campfire-cove-resort-booking-front-tau.vercel.app", 
     ],
     credentials: true,
