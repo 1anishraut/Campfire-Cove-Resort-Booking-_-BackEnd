@@ -1,21 +1,25 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const adventureSchema = new mongoose.Schema({
-  advName:{
-    type: String
+  advName: {
+    type: String,
+    required: true,
+    maxlength: 100,
   },
-  advImage:{
-    type: String
+  advImage: {
+    type: String,
+    
   },
   advDescription: {
-    type: String
+    type: String,
+    required: true,
   },
   advPrice: {
-    type: Number
-  }
+    type: Number,
+    required: true,
+  },
+});
 
-})
+const Adventure_Data = mongoose.model("Adventure_Data", adventureSchema);
 
-const Adventure_Data = mongoose.model("Adventure_Data", adventureSchema)
-
-module.exports = Adventure_Data
+module.exports = Adventure_Data;

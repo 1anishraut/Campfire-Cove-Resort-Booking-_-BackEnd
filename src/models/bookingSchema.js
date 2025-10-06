@@ -9,7 +9,7 @@ const bookingSchema = new mongoose.Schema(
       lowercase: true,
       match: /.+\@.+\..+/,
     },
-    contact: { type: String, required: true, match: /^[0-9]{10}$/ },
+    contact: { type: String, required: true },
     roomId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Room_Data",
@@ -22,11 +22,11 @@ const bookingSchema = new mongoose.Schema(
     },
     checkIn: {
       type: Date,
-      //  required: true
+      required: true,
     },
     checkOut: {
       type: Date,
-      // required: true,
+      required: true,
       validate: {
         validator: function (value) {
           return value > this.checkIn;
@@ -47,8 +47,6 @@ const bookingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-
 
 const Booking = mongoose.model("Booking", bookingSchema);
 module.exports = Booking;

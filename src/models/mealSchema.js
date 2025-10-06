@@ -4,13 +4,16 @@ const mealSchema = new mongoose.Schema(
   {
     mealCategory: {
       type: String,
+      required: true,
     },
     mealName: {
       type: String,
+      required: true,
     },
     mealType: {
       type: String,
       default: "Veg",
+      required: true,
       enum: {
         values: ["Veg", "Non Veg"],
         message: `{VALUE} is not a valid meal type`,
@@ -18,13 +21,15 @@ const mealSchema = new mongoose.Schema(
     },
     mealPrice: {
       type: Number,
-      min: 0,
+
+      required: true,
     },
     mealImage: {
       type: String,
     },
     cuisine: {
       type: String,
+      required: true,
       enum: ["Indian", "Chinese"],
       message: `{VALUE} is not a valid cuisine type`,
     },

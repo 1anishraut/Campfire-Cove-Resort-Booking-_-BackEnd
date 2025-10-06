@@ -4,13 +4,12 @@ const roomSchema = mongoose.Schema(
   {
     roomName: {
       type: String,
-      // required: true,
+      required: true,
       trim: true,
     },
     roomPrice: {
       type: Number,
-      // required: true,
-      min: 0,
+      required: true,
     },
     roomImage: {
       type: String,
@@ -24,7 +23,7 @@ const roomSchema = mongoose.Schema(
     roomStatus: {
       type: String,
       default: "Available",
-      // required: true,
+      required: true,
       enum: {
         values: ["Booked", "Available"],
         message: `{VALUE} is not a valid Stay Status type`,

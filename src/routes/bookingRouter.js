@@ -42,8 +42,6 @@ bookingRouter.post("/booking/create", async (req, res) => {
     amount = amount + (adventure?.advPrice || 0)
     amount = amount * 1.18
     
-    
-
     const booking = await Booking.create({
       fullName,
       emailId,
@@ -57,15 +55,14 @@ bookingRouter.post("/booking/create", async (req, res) => {
     });
     
     
-
     res.status(201).json(booking);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Failed to create booking" });
   }
 });
 
-// ✅ Step 3: Get Booking Details
+//  Step 3: Get Booking Details
 bookingRouter.get("/booking/:id", async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id).populate("roomId").populate("adventureId");
@@ -75,11 +72,11 @@ bookingRouter.get("/booking/:id", async (req, res) => {
       RAZORPAY_KEY_ID: "rzp_test_RL3tCu2KFn4vyE"
     });
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Error : No bookings found" });
   }
 });
 
-// ✅ Step 4: Create Razorpay Order
+//  Step 4: Create Razorpay Order
 bookingRouter.post("/booking/pay/:id", async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
@@ -121,7 +118,7 @@ bookingRouter.post("/booking/pay/:id", async (req, res) => {
   }
 });
 
-// ✅ Razorpay Webhook to confirm payment
+//  Razorpay Webhook to confirm payment
 bookingRouter.post("/booking/verify", async (req, res) => {
   try {
     const {
@@ -180,7 +177,7 @@ bookingRouter.get("/admin/allBookings", adminAuth, async (req, res) => {
     res.json(allBookings);
   } catch (err) {
     console.error("Error fetching all bookings:", err);
-    res.status(500).json({ message: "Failed to fetch bookings" });
+    res.status(500).json({ message: "Failed to fetch all bookings" });
   }
 });
 
